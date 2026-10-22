@@ -27,10 +27,6 @@ A reusable agent harness should **standardize component interfaces and execution
 
 This is a **research position paper and candidate reference-standard proposal**, not an adopted standard or a demonstration of autonomous self-improvement. No new experimental results are claimed. The proposed initialization and promotion protocols require reference implementations and held-out validation. Before public scholarly release, the responsible author should review all citations, technical statements, authorship information, and disclosures.
 
-## Contents
-
-- `Agent_Harness_Initialization_and_Self_Evolution.pdf` — compiled paper
-- `main.tex` plus `*.tex` modules and `references.bib` — editable LaTeX sources (in the source archive)
 
 The project is intended to support discussion of common agent execution semantics while leaving concrete algorithms and task-specific implementation choices open.
 
