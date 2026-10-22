@@ -4,7 +4,7 @@
 
 *Research position paper and candidate reference-standard proposal · October 2026 · Draft v0.2*
 
-[Read the technical paper (PDF)](./paper.pdf)
+[Read the technical paper (PDF)](./agent-harness-reference.pdf)
 
 ## TL;DR
 
