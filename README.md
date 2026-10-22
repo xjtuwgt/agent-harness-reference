@@ -1,80 +1,35 @@
-# Agent Harness Contract (AHC)
+# Agent Harness: Foundations, Initialization, and Self-Evolution
 
-**Toward a general-purpose execution and learning interface for agentic post-training.**
-
-*Research position paper and candidate reference-standard proposal · October 2026 · Draft v0.2*
-
-[Read the technical paper (PDF)](./agent-harness-reference.pdf)
+**A Reference Architecture for Execution, Memory, and Model–Harness Learning**  
+Technical report · Draft v3 · 21 October 2026
 
 ## TL;DR
 
-An LLM agent is more than a model: it repeatedly **assembles context, chooses an action, interacts with an environment, observes the result, evaluates progress, updates state or memory, and either continues or stops**. We argue that this lifecycle can form a **general-purpose harness contract** shared by heterogeneous agentic tasks, including coding, research, web workflows, and recommendation.
+A reusable agent harness should **standardize component interfaces and execution semantics, not task-specific solutions**. For each task, a task declaration initializes the necessary context, memory, skills, tools, evaluators, permissions, and budgets into a versioned executable harness **H₀**. That initial harness can then collect traces, diagnose failure, propose edits to particular components, and promote only independently validated and authorized changes. **Self-evolution is a capability to test, not an automatic consequence of standardization.** The same execution records can also support LLM policy post-training and controlled model–harness co-optimization.
 
-**Our central proposal:** standardize the **execution and learning interface**, *not* a fixed set of eight files, a single agent SDK, or an identical implementation for every task. Such an interface can provide a reusable substrate for **agentic post-training**: models can learn from comparable, well-attributed interaction trajectories while each task retains its own tools, context, state, reward signals, and safety constraints.
+### The proposed three-stage architecture
 
-The paper proposes **Agent Harness Contract (AHC)** to connect task execution with training, evaluation, and two complementary optimization pathways:
+1. **Common contracts** — stable context/action/effect/state/evaluation interfaces and optional capabilities.
+2. **Task-specific initialization** — select and configure components, verify readiness, pin H₀.
+3. **Guarded self-evolution** — execute, diagnose, propose module edits, test, commit or roll back; train the LLM policy when appropriate.
 
-- **Optimize the LLM policy (θ):** learn better actions, planning, tool use, recovery, and stopping decisions from trajectories and task-dependent feedback.
-- **Optimize the harness (φ):** improve context assembly, memory retrieval and updates, tool routing, orchestration, guardrails, and verification—without necessarily updating model weights.
-- **Study their interaction:** keep both versions and evaluation conditions explicit so improvements can be attributed and training/serving mismatches detected.
+### Paper covers
 
-> **Scope:** This is a proposed reference architecture and research agenda, **not** an adopted industry standard, a universal-agent theorem, a new RL algorithm, or a claim of experimentally validated gains.
+- The relationship between agent harnesses, runtime SDKs, language-model policies, and agentic learning.
+- A review of ReAct, LangGraph, OpenAI Agents SDK, Google ADK, MCP, OpenEnv, OpenTelemetry, Agent Lightning, Agent-R1, AHE, Harness², Self-HPO, SIA, and related work, identifying overlaps and missing interfaces.
+- The Agent Harness Contract (AHC): a minimal Core, plus optional Initialization, Memory, Training, Replay, Optimization, and Safety profiles.
+- Task specification, module selection, H₀ initialization, five bootstrap readiness gates, and permission-safe edit boundaries.
+- Context/memory management as evolving policies; episodic memory updates are distinct from harness-policy evolution.
+- Harness-only optimization, LLM policy optimization, joint optimization, diagnostic attribution and training–serving consistency.
+- Seven **proposed**, not yet executed, evaluations including cross-runtime interoperability and initialization-quality/self-evolution ablations.
 
-## The common agent execution loop
+## Research status
 
-```mermaid
-flowchart TD
-    C[Assemble model-visible context] --> P[LLM policy: propose an action]
-    P --> X[Validate and execute action]
-    X --> O[Collect observation and actual effects]
-    O --> E[Evaluate progress, evidence and outcome]
-    E --> U[Update working context / gated durable memory]
-    U --> D{Terminate?}
-    D -->|No| C
-    D -->|Yes| T[Finalize outcome and versioned learning trace]
-```
+This is a **research position paper and candidate reference-standard proposal**, not an adopted standard or a demonstration of autonomous self-improvement. No new experimental results are claimed. The proposed initialization and promotion protocols require reference implementations and held-out validation. Before public scholarly release, the responsible author should review all citations, technical statements, authorship information, and disclosures.
 
-This is a **shared interaction protocol**, not a claim that different tasks should use identical action spaces or rewards. A coding task can use tests and a sandbox; a browser agent may require approvals; a recommendation agent may depend on delayed, confounded user feedback. All can expose the same high-level lifecycle while retaining domain-specific semantics.
+## Contents
 
-## What the paper covers
+- `Agent_Harness_Initialization_and_Self_Evolution_v3.pdf` — compiled paper
+- `main.tex` plus `*.tex` modules and `references.bib` — editable LaTeX sources (in the source archive)
 
-| Theme | Main question | Proposal or analysis |
-| --- | --- | --- |
-| **1. Universal execution** | Can diverse digital tasks be expressed by a common agent interaction loop? | Define context, action, actual execution effects, observation, evaluation, state update, and termination as explicit lifecycle responsibilities. |
-| **2. Standardizable components** | Do all agents need the same eight Harness² components? | Treat prompts, memory, skills, tools, scripts, subagents, guardrails, and plugins as composable implementations; standardize interface semantics, not the component count. |
-| **3. Existing frameworks and gaps** | How close are current systems? | Compare ReAct; LangGraph; OpenAI Agents SDK; Google ADK; MCP; OpenEnv; OpenTelemetry; Agent Lightning; Agent-R1; Harness²/AHE; Self-HPO/SIA, and related work. Identify gaps in cross-runtime semantics, training-trace validity, replay, and attribution. |
-| **4. Agentic post-training** | What turns an execution log into valid learning data? | Track exact model-visible context, admissible actions, model/harness versions, intended vs. executed actions, state changes, reward provenance, and training eligibility. |
-| **5. Context and memory** | Can long-context decisions become trainable policies? | Distinguish working context, evidence, trajectories and persistent memory; examine retrieval, compression, updates and an illustrative unified-memory design. |
-| **6. Feedback and reward** | What if ground truth is noisy, missing or delayed? | Separate *done*, *correct*, and *reward*; record feedback sources, confidence, latency, exposure biases and attribution limits. |
-| **7. Dual optimization** | When should we train the LLM versus improve the harness? | Formalize policy-only, harness-only and controlled alternating optimization; propose 2×2 model–harness comparisons and budget-matched evaluations. |
-| **8. Reference standard feasibility** | Does standardization actually help? | Propose an Agent Harness Contract (AHC), modular conformance profiles, cross-framework adapters, and falsifiable transfer/portability experiments. |
-
-## Where existing work fits
-
-**The goal is interoperability, not replacement.** Existing projects solve important parts of the problem:
-
-- **LangGraph / OpenAI Agents SDK / Google ADK:** mature agent runtimes, state, tools, orchestration, and/or observability; not necessarily a shared *cross-runtime training semantics* contract.
-- **MCP / OpenEnv / OpenTelemetry:** complementary standards for tool integration, environment interaction, and telemetry; none alone specifies every field necessary for reward-attributed, replayable agent learning.
-- **Agent Lightning / Agent-R1:** strong prior work on reusable agentic training infrastructure and step-level transitions, but not a universal conformance standard across arbitrary runtimes.
-- **Harness² / AHE:** formalize and optimize editable harness components, primarily with fixed underlying model weights in the cited setups.
-- **Self-HPO / SIA:** important prior work on joint or alternating harness–policy improvement; AHC instead emphasizes versioned, auditable comparison across frameworks and tasks.
-
-The paper identifies open issues rather than claiming that no related framework exists.
-
-## Proposed standardization boundary
-
-**Standardize:** observable lifecycle semantics; typed action and effect records; context provenance; working vs. persistent state; completion vs. reward; harness/model/evaluator versioning; reusable training traces; conformance and replay tests.
-
-**Keep task-specific:** action space, concrete prompts, skills, retrieval methods, memory layout, reward estimator, verification logic, task constraints and policy implementation.
-
-The paper defines six optional compatibility profiles around a **Core** contract: **Memory, Training, Replay, Optimization, and Safety**.
-
-## How to evaluate the idea
-
-The report proposes six falsifiable studies: cross-framework portability, training usefulness of standardized traces, causal attribution of model and harness changes, long-context/memory fidelity, delayed/noisy feedback, and generalization to held-out tasks and tools. The key test is whether the added standardization produces real benefits under **matched compute and clearly defined baselines**—not whether a schema alone can make an agent smarter.
-
-## Research status and citation
-
-This repository currently contains **only the technical paper and its introduction**. The AHC interfaces and experiments are *proposed*; adapters and new empirical results are not included in this release. Please do not describe AHC as a ratified industry standard or cite the paper as empirical proof of cross-task transfer.
-
-**Paper:** *Toward a Reference Standard for Agentic Post-Training: Universal Harness Execution Contracts, Context Management, and Model–Harness Co-Optimization* (Technical Report, October 2026). Authors to be confirmed before any public release.
+The project is intended to support discussion of common agent execution semantics while leaving concrete algorithms and task-specific implementation choices open.
