@@ -130,7 +130,3 @@ For runtime and telemetry baselines, see [OpenAI Agents SDK](https://github.com/
 7. Add Browser or another qualitatively different task; require held-out generalization, safety checks and independent evaluation before calling it cross-task evidence.
 
 **Falsifiable bottom line:** AHC can be a valuable interoperability contract without having an Evolution profile at all. If independent runtimes cannot pass conformance, it fails as a standard proposal. If targeted edits fail to outperform equal-budget simple search on holdout, its autonomous-improvement hypothesis fails in those settings. No new AHC implementation experiments are claimed in this repository.
-
-## Build and status
-
-LaTeX: `pdflatex main.tex && biber main && pdflatex main.tex && pdflatex main.tex`. The source is split into topic files including `architecture_extension.tex`, `attribution_extension.tex`, `evaluation_extension.tex`, and `landscape_extension.tex`.
